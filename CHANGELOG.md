@@ -1,3 +1,12 @@
+## [0.1.4](https://github.com/MindFlavor/AzureSDKForRust/releases/tag/0.1.4) (yet-to-publish)
+
+**Implemented features:**
+
+**Refactoring:**
+
+**Bugfixes:**
+
+
 ## [0.1.3](https://github.com/MindFlavor/AzureSDKForRust/releases/tag/0.1.3) (2016-02-05)
 
 **Implemented features:**
