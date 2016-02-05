@@ -145,4 +145,4 @@ If you want to contribute please do! No formality required! :wink:
 
 
 ## License
-This project is published under [The MIT License (MIT)](LICENSE).
+This project is published under [Apache license, version 2.0](LICENSE).
