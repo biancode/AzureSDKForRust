@@ -50,7 +50,7 @@ use hyper::status::StatusCode;
 use hyper::header::{Headers, ContentType, ContentLength, LastModified, ContentEncoding,
                     ContentLanguage};
 
-use rustc_serialize::base64::{STANDARD, ToBase64};
+use base64;
 
 use uuid::Uuid;
 
@@ -592,7 +592,7 @@ impl Blob {
                      content: (&mut Read, u64))
                      -> Result<(), AzureError> {
 
-        let encoded_block_id = block_id.as_bytes().to_base64(STANDARD);
+        let encoded_block_id = base64::encode(block_id.as_bytes());
 
         let mut uri = format!("{}://{}.blob.core.windows.net/{}/{}?comp=block&blockid={}",
                               c.auth_scheme(),

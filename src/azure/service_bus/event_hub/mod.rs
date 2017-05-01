@@ -10,7 +10,7 @@ use chrono;
 use time::Duration;
 
 use std::ops::Add;
-use rustc_serialize::base64::{STANDARD, ToBase64};
+use base64;
 
 use url::percent_encoding::utf8_percent_encode;
 use url::form_urlencoded::Serializer;
@@ -97,7 +97,7 @@ fn generate_signature(policy_name: &str,
     hmac.reset();
     hmac.input(str_to_sign.as_bytes());
     let sig = {
-        let sig = hmac.result().code().to_base64(STANDARD);
+        let sig = base64::encode(hmac.result().code());
         debug!("sig == {}", sig);
         let mut ser = Serializer::new(String::new());
         ser.append_pair("sig", &sig);

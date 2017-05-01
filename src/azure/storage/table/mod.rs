@@ -12,7 +12,8 @@ use hyper::client::response::Response;
 use hyper::header::{Accept, ContentType, Headers, IfMatch, qitem};
 use hyper::mime::{Attr, Mime, SubLevel, TopLevel, Value};
 use hyper::status::StatusCode;
-use rustc_serialize::{Decodable, Encodable, json};
+use serde::{Serialize, Deserialize};
+use serde_json;
 
 const TABLE_TABLES: &'static str = "TABLES";
 
@@ -34,7 +35,7 @@ impl TableService {
 
     // Create table if not exists.
     pub fn create_table<T: Into<String>>(&self, table_name: T) -> Result<(), AzureError> {
-        let ref body = json::encode(&TableEntity { TableName: table_name.into() }).unwrap();
+        let ref body = serde_json::to_string(&TableEntity { TableName: table_name.into() }).unwrap();
         let mut response = try!(self.request_with_default_header(TABLE_TABLES,
                                                                  core::HTTPMethod::Post,
                                                                  Some(body)));
@@ -47,7 +48,7 @@ impl TableService {
         Ok(())
     }
 
-    pub fn get_entity<T: Decodable>(&self,
+    pub fn get_entity<'a, T: Deserialize<'a>>(&self,
                                     table_name: &str,
                                     partition_key: &str,
                                     row_key: &str)
@@ -60,10 +61,10 @@ impl TableService {
         }
         try!(errors::check_status(&mut response, StatusCode::Ok));
         let ref body = try!(get_response_body(&mut response));
-        Ok(json::decode(body).unwrap())
+        Ok(serde_json::from_str(body).unwrap())
     }
 
-    pub fn query_entities<T: Decodable>(&self,
+    pub fn query_entities<'a, T: Deserialize<'a>>(&self,
                                         table_name: &str,
                                         query: Option<&str>)
                                         -> Result<Vec<T>, AzureError> {
@@ -77,28 +78,28 @@ impl TableService {
             try!(self.request_with_default_header(path.as_str(), core::HTTPMethod::Get, None));
         try!(errors::check_status(&mut response, StatusCode::Ok));
         let ref body = try!(get_response_body(&mut response));
-        let ec: EntityCollection<T> = json::decode(body).unwrap();
+        let ec: EntityCollection<T> = serde_json::from_str(body).unwrap();
         Ok(ec.value)
     }
 
-    pub fn insert_entity<T: Encodable>(&self,
+    pub fn insert_entity<T: Serialize>(&self,
                                        table_name: &str,
                                        entity: &T)
                                        -> Result<(), AzureError> {
-        let ref body = json::encode(entity).unwrap();
+        let ref body = serde_json::to_string(entity).unwrap();
         let mut resp =
             try!(self.request_with_default_header(table_name, core::HTTPMethod::Post, Some(body)));
         try!(errors::check_status(&mut resp, StatusCode::Created));
         Ok(())
     }
 
-    pub fn update_entity<T: Encodable>(&self,
+    pub fn update_entity<T: Serialize>(&self,
                                        table_name: &str,
                                        partition_key: &str,
                                        row_key: &str,
                                        entity: &T)
                                        -> Result<(), AzureError> {
-        let ref body = json::encode(entity).unwrap();
+        let ref body = serde_json::to_string(entity).unwrap();
         let ref path = entity_path(table_name, partition_key, row_key);
         let mut resp =
             try!(self.request_with_default_header(path, core::HTTPMethod::Put, Some(body)));
@@ -121,7 +122,7 @@ impl TableService {
         Ok(())
     }
 
-    pub fn batch<T: Encodable>(&self,
+    pub fn batch<T: Serialize>(&self,
                                table_name: &str,
                                partition_key: &str,
                                batch_items: &[BatchItem<T>])
@@ -175,12 +176,12 @@ impl TableService {
 
 
 #[allow(non_snake_case)]
-#[derive(RustcEncodable, RustcDecodable)]
+#[derive(Serialize, Deserialize)]
 struct TableEntity {
     TableName: String,
 }
 
-#[derive(RustcDecodable)]
+#[derive(Deserialize)]
 struct EntityCollection<T> {
     value: Vec<T>,
 }

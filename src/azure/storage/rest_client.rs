@@ -9,7 +9,7 @@ use hyper;
 use hyper::Client;
 use hyper::header::{Header, HeaderFormat, Headers, ContentEncoding, ContentLanguage,
                     ContentLength, ContentType, Date, IfModifiedSince, IfUnmodifiedSince};
-use rustc_serialize::base64::{STANDARD, ToBase64, FromBase64};
+use base64;
 use std::fmt::Display;
 use std::io::Read;
 use url;
@@ -62,7 +62,7 @@ fn generate_authorization(h: &Headers,
 fn encode_str_to_sign(str_to_sign: &str, hmac_key: &str) -> String {
     let mut v_hmac_key: Vec<u8> = Vec::new();
 
-    v_hmac_key.extend(hmac_key.from_base64().unwrap());
+    v_hmac_key.extend(base64::decode(hmac_key).unwrap());
 
     let mut hmac = Hmac::new(Sha256::new(), &v_hmac_key);
     hmac.input(str_to_sign.as_bytes());
@@ -70,7 +70,7 @@ fn encode_str_to_sign(str_to_sign: &str, hmac_key: &str) -> String {
     // let res = hmac.result();
     // println!("{:?}", res.code());
 
-    hmac.result().code().to_base64(STANDARD)
+    base64::encode(hmac.result().code())
 }
 
 #[inline]

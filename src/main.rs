@@ -7,7 +7,7 @@ extern crate hyper_native_tls;
 extern crate chrono;
 extern crate url;
 extern crate crypto;
-extern crate rustc_serialize;
+extern crate base64;
 extern crate xml;
 extern crate mime;
 extern crate time;
@@ -16,6 +16,11 @@ extern crate log;
 #[macro_use]
 extern crate quick_error;
 extern crate env_logger;
+
+#[macro_use]
+extern crate serde_derive;
+extern crate serde;
+extern crate serde_json;
 
 extern crate uuid;
 

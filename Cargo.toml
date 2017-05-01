@@ -15,7 +15,6 @@ doc = false
 [dependencies]
 chrono = "*"
 rust-crypto = "*"
-rustc-serialize = "*"
 quick-error = "*"
 RustyXML = "*"
 mime = "*"
@@ -24,7 +23,10 @@ env_logger = "*"
 uuid = "*"
 time = "*"
 url = "*"
-
+base64 = "*"
+serde = "*"
+serde_json = "*"
+serde_derive = "*"
 hyper-native-tls="*"
 
 # clippy="*"
