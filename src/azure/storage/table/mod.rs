@@ -35,7 +35,8 @@ impl TableService {
 
     // Create table if not exists.
     pub fn create_table<T: Into<String>>(&self, table_name: T) -> Result<(), AzureError> {
-        let ref body = serde_json::to_string(&TableEntity { TableName: table_name.into() }).unwrap();
+        let ref body = serde_json::to_string(&TableEntity { TableName: table_name.into() })
+            .unwrap();
         let mut response = try!(self.request_with_default_header(TABLE_TABLES,
                                                                  core::HTTPMethod::Post,
                                                                  Some(body)));
@@ -49,10 +50,10 @@ impl TableService {
     }
 
     pub fn get_entity<'a, T: Deserialize<'a>>(&self,
-                                    table_name: &str,
-                                    partition_key: &str,
-                                    row_key: &str)
-                                    -> Result<Option<T>, AzureError> {
+                                              table_name: &str,
+                                              partition_key: &str,
+                                              row_key: &str)
+                                              -> Result<Option<T>, AzureError> {
         let ref path = entity_path(table_name, partition_key, row_key);
         let mut response =
             try!(self.request_with_default_header(path, core::HTTPMethod::Get, None));
@@ -65,9 +66,9 @@ impl TableService {
     }
 
     pub fn query_entities<'a, T: Deserialize<'a>>(&self,
-                                        table_name: &str,
-                                        query: Option<&str>)
-                                        -> Result<Vec<T>, AzureError> {
+                                                  table_name: &str,
+                                                  query: Option<&str>)
+                                                  -> Result<Vec<T>, AzureError> {
         let mut path = table_name.to_owned();
         if let Some(clause) = query {
             path.push_str("?");
