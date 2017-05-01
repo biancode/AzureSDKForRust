@@ -27,9 +27,9 @@ impl BA512Range {
         }
 
         Ok(BA512Range {
-            start: start,
-            end: end,
-        })
+               start: start,
+               end: end,
+           })
     }
 
     #[inline]
@@ -133,10 +133,7 @@ mod test {
 
     #[test]
     fn test_512range_display() {
-        let range = BA512Range {
-            start: 0,
-            end: 511,
-        };
+        let range = BA512Range { start: 0, end: 511 };
 
         let txt = format!("{}", range);
 

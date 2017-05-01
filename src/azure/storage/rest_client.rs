@@ -7,8 +7,8 @@ use crypto::mac::Mac;
 use crypto::sha2::Sha256;
 use hyper;
 use hyper::Client;
-use hyper::header::{Header, HeaderFormat, Headers, ContentEncoding, ContentLanguage, ContentLength,
-                    ContentType, Date, IfModifiedSince, IfUnmodifiedSince};
+use hyper::header::{Header, HeaderFormat, Headers, ContentEncoding, ContentLanguage,
+                    ContentLength, ContentType, Date, IfModifiedSince, IfUnmodifiedSince};
 use rustc_serialize::base64::{STANDARD, ToBase64, FromBase64};
 use std::fmt::Display;
 use std::io::Read;
@@ -165,10 +165,7 @@ fn canonicalize_header(h: &Headers) -> String {
     let mut v_headers = Vec::new();
 
     for header in h.iter().filter(|h| h.name().starts_with("x-ms")) {
-        let s: String = header.name()
-            .to_owned()
-            .trim()
-            .to_lowercase();
+        let s: String = header.name().to_owned().trim().to_lowercase();
 
         v_headers.push(s);
     }
@@ -233,7 +230,7 @@ fn canonicalized_resource(u: &url::Url) -> String {
     can_res = can_res + "\n";
 
     // query parameters
-    let query_pairs = u.query_pairs();//.into_owned();
+    let query_pairs = u.query_pairs(); //.into_owned();
     {
         let mut qps = Vec::new();
         {
@@ -275,7 +272,7 @@ fn canonicalized_resource(u: &url::Url) -> String {
 
 // TODO: This can be better: there's no need to own the collection since we are cloining it again here
 fn lexy_sort(vec: &url::form_urlencoded::Parse, query_param: &str) -> Vec<(String)> {
-    let mut v_values : Vec<String> = Vec::new();
+    let mut v_values: Vec<String> = Vec::new();
 
     for item in vec.filter(|x| x.0 == *query_param) {
         v_values.push(item.1.into_owned())
@@ -285,16 +282,15 @@ fn lexy_sort(vec: &url::form_urlencoded::Parse, query_param: &str) -> Vec<(Strin
     v_values
 }
 
-pub fn perform_request
-    (client: &Client,
-     uri: &str,
-     method: HTTPMethod,
-     azure_key: &str,
-     headers: &Headers,
-     request_body: Option<(&mut Read, u64)>,
-     request_str: Option<&str>,
-     service_type: ServiceType)
-     -> Result<hyper::client::response::Response, hyper::error::Error> {
+pub fn perform_request(client: &Client,
+                       uri: &str,
+                       method: HTTPMethod,
+                       azure_key: &str,
+                       headers: &Headers,
+                       request_body: Option<(&mut Read, u64)>,
+                       request_str: Option<&str>,
+                       service_type: ServiceType)
+                       -> Result<hyper::client::response::Response, hyper::error::Error> {
     let dt = chrono::UTC::now();
     let time = format!("{}", dt.format("%a, %d %h %Y %T GMT"));
 

@@ -10,7 +10,7 @@ use time::Duration;
 use std::ops::Add;
 use rustc_serialize::base64::{STANDARD, ToBase64};
 
-use url::percent_encoding::{utf8_percent_encode};
+use url::percent_encoding::utf8_percent_encode;
 use url::form_urlencoded::Serializer;
 
 use hyper::header::parsing::HTTP_VALUE;
@@ -97,7 +97,7 @@ fn generate_signature(policy_name: &str,
         ser.append_pair("sig", &sig);
         ser.finish()
     };
-               
+
     debug!("sig == {:?}", sig);
 
     format!("SharedAccessSignature sr={}&sig={}&se={}&skn={}",

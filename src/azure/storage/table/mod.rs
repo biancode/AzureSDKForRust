@@ -166,7 +166,8 @@ impl TableService {
             trace!("Request: {}", body);
         }
 
-        let resp = try!(self.client.perform_table_request(segment, method, headers, request_str));
+        let resp = try!(self.client
+                            .perform_table_request(segment, method, headers, request_str));
         trace!("Response status: {:?}", resp.status);
         Ok(resp)
     }

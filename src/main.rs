@@ -209,7 +209,7 @@ fn send_event(cli: &mut azure::service_bus::event_hub::Client) {
     let mut file_handle = fs::File::open(file_name).unwrap();
 
     cli.send_event((&mut file_handle, metadata.len()), Duration::hours(1))
-       .unwrap();
+        .unwrap();
 }
 
 #[allow(dead_code)]
@@ -219,7 +219,10 @@ fn lease_blob(client: &Client) {
     let ret = Container::list(client, &LIST_CONTAINER_OPTIONS_DEFAULT).unwrap();
     let vhds = ret.iter().find(|x| x.name == "rust").unwrap();
     let blobs = Blob::list(&client, &vhds.name, &LIST_BLOB_OPTIONS_DEFAULT).unwrap();
-    let blob = blobs.iter().find(|ref x| x.name == "go_rust12.txt").unwrap();
+    let blob = blobs
+        .iter()
+        .find(|ref x| x.name == "go_rust12.txt")
+        .unwrap();
 
     println!("blob == {:?}", blob);
 
@@ -299,11 +302,12 @@ fn put_block_blob(client: &Client) {
         copy_status_description: None,
     };
 
-    new_blob.put_block(&client,
-                       "block_name",
-                       &PUT_BLOCK_OPTIONS_DEFAULT,
-                       (&mut file, 1024 * 1024))
-            .unwrap();
+    new_blob
+        .put_block(&client,
+                   "block_name",
+                   &PUT_BLOCK_OPTIONS_DEFAULT,
+                   (&mut file, 1024 * 1024))
+        .unwrap();
 
     println!("created {:?}", new_blob);
 }
@@ -358,16 +362,18 @@ fn put_page_blob(client: &Client) {
         copy_status_description: None,
     };
 
-    new_blob.put(&client, &PUT_OPTIONS_DEFAULT, None)
-            .unwrap();
+    new_blob
+        .put(&client, &PUT_OPTIONS_DEFAULT, None)
+        .unwrap();
 
     let range = BA512Range::new(0, 1024 * 1024 - 1).unwrap();
 
-    new_blob.put_page(client,
-                      &range, // 1MB
-                      &PUT_PAGE_OPTIONS_DEFAULT,
-                      (&mut file, range.size()))
-            .unwrap();
+    new_blob
+        .put_page(client,
+                  &range, // 1MB
+                  &PUT_PAGE_OPTIONS_DEFAULT,
+                  (&mut file, range.size()))
+        .unwrap();
 
     println!("created {:?}", new_blob);
 }
