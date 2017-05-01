@@ -3,6 +3,7 @@
 
 #[macro_use]
 extern crate hyper;
+extern crate hyper_native_tls;
 extern crate chrono;
 extern crate url;
 extern crate crypto;
@@ -95,9 +96,14 @@ fn main() {
     // "write_policy",
     // "9GIzBhQhMKg/patjrI2XS6gSGn6ju2+N40CQEYmowJ8=");
 
-    // client.create_container("balocco3", PublicAccess::Blob).unwrap();
-    // // println!("{:?}", new);
-    //
+    info!("Enumerating containers");
+    Container::list(&client, &LIST_CONTAINER_OPTIONS_DEFAULT).unwrap();
+    Container::create(&client, "sample", PublicAccess::Blob).unwrap();
+    info!("Enumeration completed");
+
+    //client.create_container("balocco3", PublicAccess::Blob).unwrap();
+    // println!("{:?}", new);
+
 
     info!("Beginning tests");
 
@@ -203,7 +209,7 @@ fn main() {
 #[allow(dead_code)]
 fn send_event(cli: &mut azure::service_bus::event_hub::Client) {
     debug!("running send_event");
-    let file_name = "C:\\temp\\samplein.json";
+    let file_name = "/home/MINDFLAVOR/mindflavor/samplein.json";
 
     let metadata = fs::metadata(file_name).unwrap();
     let mut file_handle = fs::File::open(file_name).unwrap();

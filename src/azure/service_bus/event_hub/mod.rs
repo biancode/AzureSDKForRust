@@ -1,6 +1,8 @@
 use azure::core::errors::{AzureError, UnexpectedHTTPResult};
 
 use hyper;
+use hyper::net::HttpsConnector;
+use hyper_native_tls::NativeTlsClient;
 use hyper::header::{Headers, ContentLength};
 use hyper::status::StatusCode;
 
@@ -49,10 +51,13 @@ fn send_event(namespace: &str,
     debug!("sas == {}", sas);
 
     // add required headers (in this case just the Authorization and Content-Length).
-    let client = hyper::client::Client::new();
+    let ssl = NativeTlsClient::new().unwrap();
+    let connector = HttpsConnector::new(ssl);
+    let client = hyper::client::Client::with_connector(connector);
     let mut headers = Headers::new();
     headers.set(Authorization(sas));
     headers.set(ContentLength(event_body.1));
+    debug!("headers == {:?}", headers);
 
     let body = hyper::client::Body::SizedBody(event_body.0, event_body.1);
 
@@ -93,14 +98,17 @@ fn generate_signature(policy_name: &str,
     hmac.input(str_to_sign.as_bytes());
     let sig = {
         let sig = hmac.result().code().to_base64(STANDARD);
+        debug!("sig == {}", sig);
         let mut ser = Serializer::new(String::new());
         ser.append_pair("sig", &sig);
-        ser.finish()
+        let sig = ser.finish();
+        debug!("sig == {}", sig);
+        sig
     };
 
     debug!("sig == {:?}", sig);
 
-    format!("SharedAccessSignature sr={}&sig={}&se={}&skn={}",
+    format!("SharedAccessSignature sr={}&{}&se={}&skn={}",
             &url_encoded,
             sig,
             expiry,

@@ -3,6 +3,7 @@
 
 #[macro_use]
 extern crate hyper;
+extern crate hyper_native_tls;
 extern crate chrono;
 extern crate url;
 extern crate crypto;

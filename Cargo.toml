@@ -25,6 +25,8 @@ uuid = "*"
 time = "*"
 url = "*"
 
+hyper-native-tls="*"
+
 # clippy="*"
 
 [dependencies.hyper]
