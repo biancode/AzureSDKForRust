@@ -209,7 +209,7 @@ fn get_account(u: &url::Url) -> String {
 
 // For table
 fn canonicalized_resource_table(u: &url::Url) -> String {
-    format!("/{}/{}", get_account(u), u.path().unwrap().join("/"))
+    format!("/{}/{}", get_account(u), u.path())
 }
 
 fn canonicalized_resource(u: &url::Url) -> String {
@@ -219,11 +219,11 @@ fn canonicalized_resource(u: &url::Url) -> String {
     let account = get_account(u);
     can_res = can_res + &account;
 
-    let paths = u.path().unwrap();
+    let paths = u.path_segments().unwrap();
 
     {
         let mut path = String::new();
-        for p in paths.iter() {
+        for p in paths {
             path.push_str("/");
             path.push_str(&*p);
         }
@@ -233,15 +233,16 @@ fn canonicalized_resource(u: &url::Url) -> String {
     can_res = can_res + "\n";
 
     // query parameters
-    if let Some(query_pairs) = u.query_pairs() {
+    let query_pairs = u.query_pairs();//.into_owned();
+    {
         let mut qps = Vec::new();
         {
-            for qp in &query_pairs {
+            for qp in query_pairs {
                 trace!("adding to qps {:?}", qp);
 
                 // add only once
                 if !(qps.iter().any(|x: &String| x == &qp.0)) {
-                    qps.push(qp.clone().0);
+                    qps.push(qp.0.into_owned());
                 }
             }
         }
@@ -270,11 +271,14 @@ fn canonicalized_resource(u: &url::Url) -> String {
     can_res[0..can_res.len() - 1].to_owned()
 }
 
-fn lexy_sort(vec: &[(String, String)], query_param: &str) -> Vec<(String)> {
-    let mut v_values = Vec::new();
+//fn lexy_sort(vec: &[(String, String)], query_param: &str) -> Vec<(String)> {
 
-    for item in vec.iter().filter(|x| x.0 == *query_param) {
-        v_values.push(item.clone().1)
+// TODO: This can be better: there's no need to own the collection since we are cloining it again here
+fn lexy_sort(vec: &url::form_urlencoded::Parse, query_param: &str) -> Vec<(String)> {
+    let mut v_values : Vec<String> = Vec::new();
+
+    for item in vec.filter(|x| x.0 == *query_param) {
+        v_values.push(item.1.into_owned())
     }
     v_values.sort();
 

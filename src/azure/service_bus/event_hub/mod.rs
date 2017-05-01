@@ -10,7 +10,10 @@ use time::Duration;
 use std::ops::Add;
 use rustc_serialize::base64::{STANDARD, ToBase64};
 
-use url::percent_encoding::{utf8_percent_encode, HTTP_VALUE_ENCODE_SET, FORM_URLENCODED_ENCODE_SET};
+use url::percent_encoding::{utf8_percent_encode};
+use url::form_urlencoded::Serializer;
+
+use hyper::header::parsing::HTTP_VALUE;
 
 use crypto::sha2::Sha256;
 use crypto::hmac::Hmac;
@@ -80,16 +83,21 @@ fn generate_signature(policy_name: &str,
     let expiry = chrono::UTC::now().add(ttl).timestamp();
     debug!("expiry == {:?}", expiry);
 
-    let url_encoded = utf8_percent_encode(url, HTTP_VALUE_ENCODE_SET);
-    debug!("url_encoded == {:?}", url_encoded);
+    let url_encoded = utf8_percent_encode(url, HTTP_VALUE);
+    //debug!("url_encoded == {:?}", url_encoded);
 
     let str_to_sign = format!("{}\n{}", url_encoded, expiry);
     debug!("str_to_sign == {:?}", str_to_sign);
 
     hmac.reset();
     hmac.input(str_to_sign.as_bytes());
-    let sig = hmac.result().code().to_base64(STANDARD);
-    let sig = utf8_percent_encode(&sig, FORM_URLENCODED_ENCODE_SET);
+    let sig = {
+        let sig = hmac.result().code().to_base64(STANDARD);
+        let mut ser = Serializer::new(String::new());
+        ser.append_pair("sig", &sig);
+        ser.finish()
+    };
+               
     debug!("sig == {:?}", sig);
 
     format!("SharedAccessSignature sr={}&sig={}&se={}&skn={}",
