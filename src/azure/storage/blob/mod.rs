@@ -185,7 +185,10 @@ impl Blob {
 
         let last_modified =
             match h.get::<LastModified>() {
-                Some(lm) => try!(from_azure_time(&lm.to_string()).map_err(|e| {let te: TraversingError= e.into(); te})),
+                Some(lm) => {
+                    try!(from_azure_time(&lm.to_string()).map_err(|e|
+                                                {let te: TraversingError= e.into(); te}))
+                }
                 None => return Err(AzureError::HeaderNotFound("Last-Modified".to_owned())),
             };
         trace!("last_modified == {:?}", last_modified);

@@ -268,9 +268,6 @@ fn canonicalized_resource(u: &url::Url) -> String {
     can_res[0..can_res.len() - 1].to_owned()
 }
 
-//fn lexy_sort(vec: &[(String, String)], query_param: &str) -> Vec<(String)> {
-
-// TODO: This can be better: there's no need to own the collection since we are cloining it again here
 fn lexy_sort(vec: &url::form_urlencoded::Parse, query_param: &str) -> Vec<(String)> {
     let mut v_values: Vec<String> = Vec::new();
 
