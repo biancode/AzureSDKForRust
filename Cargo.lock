@@ -4,7 +4,7 @@ version = "0.2.0-beta"
 dependencies = [
  "RustyXML 0.1.1 (registry+https://github.com/rust-lang/crates.io-index)",
  "base64 0.5.1 (registry+https://github.com/rust-lang/crates.io-index)",
- "chrono 0.3.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "chrono 0.3.1 (registry+https://github.com/rust-lang/crates.io-index)",
  "env_logger 0.4.2 (registry+https://github.com/rust-lang/crates.io-index)",
  "hyper 0.10.9 (registry+https://github.com/rust-lang/crates.io-index)",
  "hyper-native-tls 0.2.2 (registry+https://github.com/rust-lang/crates.io-index)",
@@ -67,7 +67,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 
 [[package]]
 name = "chrono"
-version = "0.3.0"
+version = "0.3.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 dependencies = [
  "num 0.1.37 (registry+https://github.com/rust-lang/crates.io-index)",
@@ -611,7 +611,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 "checksum base64 0.5.1 (registry+https://github.com/rust-lang/crates.io-index)" = "124e5332dfc4e387b4ca058909aa175c0c3eccf03846b7c1a969b9ad067b8df2"
 "checksum bitflags 0.8.2 (registry+https://github.com/rust-lang/crates.io-index)" = "1370e9fc2a6ae53aea8b7a5110edbd08836ed87c88736dfabccade1c2b44bff4"
 "checksum byteorder 1.0.0 (registry+https://github.com/rust-lang/crates.io-index)" = "c40977b0ee6b9885c9013cd41d9feffdd22deb3bb4dc3a71d901cc7a77de18c8"
-"checksum chrono 0.3.0 (registry+https://github.com/rust-lang/crates.io-index)" = "158b0bd7d75cbb6bf9c25967a48a2e9f77da95876b858eadfabaa99cd069de6e"
+"checksum chrono 0.3.1 (registry+https://github.com/rust-lang/crates.io-index)" = "d9123be86fd2a8f627836c235ecdf331fdd067ecf7ac05aa1a68fbcf2429f056"
 "checksum core-foundation 0.2.3 (registry+https://github.com/rust-lang/crates.io-index)" = "25bfd746d203017f7d5cbd31ee5d8e17f94b6521c7af77ece6c9e4b2d4b16c67"
 "checksum core-foundation-sys 0.2.3 (registry+https://github.com/rust-lang/crates.io-index)" = "065a5d7ffdcbc8fa145d6f0746f3555025b9097a9e9cda59f7467abae670c78d"
 "checksum crypt32-sys 0.2.0 (registry+https://github.com/rust-lang/crates.io-index)" = "e34988f7e069e0b2f3bfc064295161e489b2d4e04a2e4248fb94360cdf00b4ec"

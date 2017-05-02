@@ -12,7 +12,8 @@ use hyper::client::response::Response;
 use hyper::header::{Accept, ContentType, Headers, IfMatch, qitem};
 use hyper::mime::{Attr, Mime, SubLevel, TopLevel, Value};
 use hyper::status::StatusCode;
-use serde::{Serialize, Deserialize};
+use serde::Serialize;
+use serde::de::DeserializeOwned;
 use serde_json;
 
 const TABLE_TABLES: &'static str = "TABLES";
@@ -49,11 +50,11 @@ impl TableService {
         Ok(())
     }
 
-    pub fn get_entity<'a, T: Deserialize<'a>>(&self,
-                                              table_name: &str,
-                                              partition_key: &str,
-                                              row_key: &str)
-                                              -> Result<Option<T>, AzureError> {
+    pub fn get_entity<T: DeserializeOwned>(&self,
+                                           table_name: &str,
+                                           partition_key: &str,
+                                           row_key: &str)
+                                           -> Result<Option<T>, AzureError> {
         let ref path = entity_path(table_name, partition_key, row_key);
         let mut response =
             try!(self.request_with_default_header(path, core::HTTPMethod::Get, None));
@@ -61,14 +62,19 @@ impl TableService {
             return Ok(None);
         }
         try!(errors::check_status(&mut response, StatusCode::Ok));
-        let ref body = try!(get_response_body(&mut response));
-        Ok(serde_json::from_str(body).unwrap())
+        let body = try!(get_response_body(&mut response));
+
+        let res = serde_json::from_str(&body).unwrap();
+
+        //res = res.clone();
+
+        Ok(res)
     }
 
-    pub fn query_entities<'a, T: Deserialize<'a>>(&self,
-                                                  table_name: &str,
-                                                  query: Option<&str>)
-                                                  -> Result<Vec<T>, AzureError> {
+    pub fn query_entities<T: DeserializeOwned>(&self,
+                                               table_name: &str,
+                                               query: Option<&str>)
+                                               -> Result<Vec<T>, AzureError> {
         let mut path = table_name.to_owned();
         if let Some(clause) = query {
             path.push_str("?");

@@ -3,7 +3,7 @@
 1. Only support single changeset in a batch request
 2. Only allow PUT and GET in changeset
 */
-use serde::{Serialize, Deserialize};
+use serde::Serialize;
 use super::entity_path;
 use serde_json;
 
