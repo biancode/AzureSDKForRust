@@ -61,7 +61,7 @@ mod test {
         let mut c = Client::new("namespace", "event_hub", "policy", "key");
 
         c.hmac.input(str_to_sign.as_bytes());
-        let sig =  base64::encode(c.hmac.result().code());
+        let sig = base64::encode(c.hmac.result().code());
 
         assert_eq!(sig, "2UNXaoPpeJBAhh6qxmTqXyNzTpOflGO6IhxegeUQBcU=");
     }
